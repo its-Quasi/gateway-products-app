@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, Param, Post, Query } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { firstValueFrom } from "rxjs";
+import { catchError, firstValueFrom } from "rxjs";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 import { PRODUCT_SERVICE } from "src/config/services";
 
@@ -23,13 +23,18 @@ export class ProductsController {
 
   @Get(":id")
   async findById(@Param("id") id: string) {
-    try {
-      const product = await firstValueFrom(
-        this.productsClient.send("get_product_id", { id })
-      );
-      return product;
-    } catch (error) {
-      throw new RpcException(error);
-    }
+    return this.productsClient.send("get_product_id", { id }).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
+    // try {
+    //   const product = await firstValueFrom(
+    //     this.productsClient.send("get_product_id", { id })
+    //   );
+    //   return product;
+    // } catch (error) {
+    //   throw new RpcException(error);
+    // }
   }
 }
