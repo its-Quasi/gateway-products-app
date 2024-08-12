@@ -1,8 +1,20 @@
-import { Controller, Get, Inject, Param, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Query
+} from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { catchError, firstValueFrom } from "rxjs";
+import { catchError } from "rxjs";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 import { PRODUCT_SERVICE } from "src/config/services";
+import { CreateProductDto } from "./dto/create-product.dto";
+import { UpdateProductDto } from "./dto/update-product.dto";
 
 @Controller("products")
 export class ProductsController {
@@ -11,8 +23,12 @@ export class ProductsController {
   ) {}
 
   @Post()
-  createProduct(@Query() product: any) {
-    return this.productsClient.send("create_product", { product });
+  createProduct(@Body() product: CreateProductDto) {
+    return this.productsClient.send("create_product", product).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
   }
 
   @Get()
@@ -22,19 +38,29 @@ export class ProductsController {
   }
 
   @Get(":id")
-  async findById(@Param("id") id: string) {
+  findById(@Param("id") id: string) {
     return this.productsClient.send("get_product_id", { id }).pipe(
       catchError((err) => {
         throw new RpcException(err);
       })
     );
-    // try {
-    //   const product = await firstValueFrom(
-    //     this.productsClient.send("get_product_id", { id })
-    //   );
-    //   return product;
-    // } catch (error) {
-    //   throw new RpcException(error);
-    // }
+  }
+
+  @Patch(":id")
+  update(@Body() update: UpdateProductDto) {
+    return this.productsClient.send("update_product", update).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.productsClient.send("delete_product", { id }).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    );
   }
 }
