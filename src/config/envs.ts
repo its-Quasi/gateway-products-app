@@ -5,6 +5,8 @@ interface EnvVars {
   PORT?: number;
   PRODUCT_MICROSERVICE_HOST?: string;
   PRODUCT_MICROSERVICE_PORT?: string;
+  ORDER_MICROSERVICE_HOST?: string;
+  ORDER_MICROSERVICE_PORT?: string;
 }
 
 const envSchema = z.object({
@@ -13,15 +15,17 @@ const envSchema = z.object({
     z.number({ required_error: "Environment Variable PORT is required" })
   ),
   PRODUCT_MICROSERVICE_HOST: z.string(),
-  PRODUCT_MICROSERVICE_PORT: z.string()
+  PRODUCT_MICROSERVICE_PORT: z.string(),
+  ORDER_MICROSERVICE_HOST: z.string(),
+  ORDER_MICROSERVICE_PORT: z.string()
 });
 
 const { success, data, error } = envSchema.safeParse(process.env);
 
 if (!success) {
-  const envar = error.issues[0].path;
+  const envvar = error.issues[0].path;
   throw new Error(
-    `Config validation Error: ${envar}:${error.issues[0].message}`
+    `Config validation Error: ${envvar}:${error.issues[0].message}`
   );
 }
 
@@ -30,5 +34,7 @@ const envVars: EnvVars = data;
 export const envs = {
   port: envVars.PORT,
   productMsHost: envVars.PRODUCT_MICROSERVICE_HOST,
-  productMsPort: envVars.PRODUCT_MICROSERVICE_PORT
+  productMsPort: envVars.PRODUCT_MICROSERVICE_PORT,
+  orderMsHost: envVars.ORDER_MICROSERVICE_HOST,
+  orderMsPort: envVars.ORDER_MICROSERVICE_PORT
 };
