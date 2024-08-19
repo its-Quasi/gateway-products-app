@@ -7,17 +7,17 @@ import {
   Inject,
   Query
 } from "@nestjs/common";
-import { CreateOrderDto } from "./dto/create-order.dto";
-import { ORDER_SERVICE } from "src/config/services";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { catchError } from "rxjs";
 import { PaginationDto } from "src/common/dto/pagination.dto";
+import { CreateOrderDto } from "./dto/create-order.dto";
+import { ORDER_SERVICE } from "src/config/services";
 
 @Controller("orders")
 export class OrdersController {
   constructor(
     @Inject(ORDER_SERVICE) private readonly orderClient: ClientProxy
-  ) {}
+  ) { }
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
