@@ -5,7 +5,8 @@ import {
   Body,
   Param,
   Inject,
-  Query
+  Query,
+  ParseUUIDPipe
 } from "@nestjs/common";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { catchError } from "rxjs";
@@ -30,7 +31,6 @@ export class OrdersController {
 
   @Get()
   findAll(@Query() pagination: PaginationDto) {
-    console.log("go to find_all_orders");
     return this.orderClient.send("find_all_orders", pagination).pipe(
       catchError((err) => {
         throw new RpcException(err);
@@ -39,7 +39,11 @@ export class OrdersController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return id;
+  findOne(@Param("id", ParseUUIDPipe) id: string) {
+    return this.orderClient.send("find_one_order", { id }).pipe(
+      catchError((err) => {
+        throw new RpcException(err);
+      })
+    )
   }
 }
