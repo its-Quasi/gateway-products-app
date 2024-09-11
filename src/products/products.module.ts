@@ -20,5 +20,5 @@ import { envs } from "src/config/envs";
   ]
 })
 export class ProductsModule {
-  constructor() {}
+  constructor() { }
 }
