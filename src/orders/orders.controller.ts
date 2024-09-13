@@ -16,7 +16,7 @@ import { ORDER_SERVICE } from "src/config/services";
 import {
   PaginationOrderDto
 } from "./dto/pagination-order.dto";
-import { UpdateOrderDto } from "./dto/update-order.dto";
+import { ChangeOrderStatusDto } from "./dto/change-order-status.dto";
 
 @Controller("orders")
 export class OrdersController {
@@ -52,7 +52,7 @@ export class OrdersController {
   }
 
   @Patch()
-  update(@Body() order: UpdateOrderDto) {
+  update(@Body() order: ChangeOrderStatusDto) {
     return this.orderClient.send("update_order", order).pipe(
       catchError((err) => {
         throw new RpcException(err);
