@@ -12,19 +12,19 @@ import {
 import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { catchError } from "rxjs";
 import { PaginationDto } from "src/common/dto/pagination.dto";
-import { PRODUCT_SERVICE } from "src/config/services";
+import { NATS_SERVICE } from "src/config/services";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 
 @Controller("products")
 export class ProductsController {
   constructor(
-    @Inject(PRODUCT_SERVICE) private readonly productsClient: ClientProxy
-  ) {}
+    @Inject(NATS_SERVICE) private readonly client: ClientProxy
+  ) { }
 
   @Post()
   createProduct(@Body() product: CreateProductDto) {
-    return this.productsClient.send("create_product", product).pipe(
+    return this.client.send("create_product", product).pipe(
       catchError((err) => {
         throw new RpcException(err);
       })
@@ -34,12 +34,12 @@ export class ProductsController {
   @Get()
   findAll(@Query() pagination: PaginationDto) {
     console.log(pagination);
-    return this.productsClient.send("get_all_products", pagination);
+    return this.client.send("get_all_products", pagination);
   }
 
   @Get(":id")
   findById(@Param("id") id: string) {
-    return this.productsClient.send("get_product_id", { id }).pipe(
+    return this.client.send("get_product_id", { id }).pipe(
       catchError((err) => {
         throw new RpcException(err);
       })
@@ -48,7 +48,7 @@ export class ProductsController {
 
   @Patch(":id")
   update(@Body() update: UpdateProductDto) {
-    return this.productsClient.send("update_product", update).pipe(
+    return this.client.send("update_product", update).pipe(
       catchError((err) => {
         throw new RpcException(err);
       })
@@ -57,7 +57,7 @@ export class ProductsController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.productsClient.send("delete_product", { id }).pipe(
+    return this.client.send("delete_product", { id }).pipe(
       catchError((err) => {
         throw new RpcException(err);
       })
