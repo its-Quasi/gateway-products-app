@@ -33,7 +33,6 @@ export class ProductsController {
 
   @Get()
   findAll(@Query() pagination: PaginationDto) {
-    console.log(pagination);
     return this.client.send("get_all_products", pagination);
   }
 
