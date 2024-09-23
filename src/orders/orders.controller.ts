@@ -13,16 +13,12 @@ import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { catchError } from "rxjs";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { NATS_SERVICE } from "src/config/services";
-import {
-  PaginationOrderDto
-} from "./dto/pagination-order.dto";
+import { PaginationOrderDto } from "./dto/pagination-order.dto";
 import { ChangeOrderStatusDto } from "./dto/change-order-status.dto";
 
 @Controller("orders")
 export class OrdersController {
-  constructor(
-    @Inject(NATS_SERVICE) private readonly client: ClientProxy
-  ) { }
+  constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
@@ -48,7 +44,7 @@ export class OrdersController {
       catchError((err) => {
         throw new RpcException(err);
       })
-    )
+    );
   }
 
   @Patch()
