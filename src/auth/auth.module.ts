@@ -4,6 +4,6 @@ import { NatsModule } from "src/brokers/nats.module";
 
 @Module({
   controllers: [AuthController],
-  providers: [NatsModule]
+  imports: [NatsModule]
 })
 export class AuthModule {}
